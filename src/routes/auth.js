@@ -55,4 +55,8 @@ router.get('/me', requireAuth, (req, res) => {
   });
 });
 
+router.get('/verify', requireAuth, (req, res) => {
+  res.json({ ok: true, apiKey: req.user.openrouterApiKey || null });
+});
+
 module.exports = router;
