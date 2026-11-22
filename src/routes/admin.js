@@ -13,6 +13,22 @@ router.get('/users', async (req, res) => {
   res.json(users);
 });
 
+router.post('/users', async (req, res) => {
+  const { username, password, subscriptionExpiry } = req.body;
+  if (!username || !password || password.length < 6)
+    return res.status(400).json({ error: 'Username and password (min 6 chars) required' });
+  const existing = await User.findOne({ username: username.toLowerCase().trim() });
+  if (existing) return res.status(409).json({ error: 'Username already exists' });
+  const hash = await bcrypt.hash(password, 10);
+  const user = await User.create({
+    username: username.toLowerCase().trim(),
+    passwordHash: hash,
+    subscribed: true,
+    subscriptionExpiry: subscriptionExpiry ? new Date(subscriptionExpiry) : null,
+  });
+  res.status(201).json({ ok: true, id: user._id });
+});
+
 router.patch('/users/:id/password', async (req, res) => {
   const { newPassword } = req.body;
   if (!newPassword || newPassword.length < 6)
