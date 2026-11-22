@@ -55,8 +55,36 @@ router.get('/me', requireAuth, (req, res) => {
   });
 });
 
-router.get('/verify', requireAuth, (req, res) => {
-  res.json({ ok: true, apiKey: req.user.openrouterApiKey || null });
+const PKR_PER_USD   = 280;
+const PKR_THRESHOLD = 25;
+
+router.get('/verify', requireAuth, async (req, res) => {
+  const apiKey = req.user.openrouterApiKey || null;
+
+  if (apiKey) {
+    try {
+      const orRes = await fetch('https://openrouter.ai/api/v1/auth/key', {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (orRes.ok) {
+        const data = await orRes.json();
+        const usageUsd = data?.data?.usage ?? 0;
+        const usagePkr = parseFloat((usageUsd * PKR_PER_USD).toFixed(2));
+
+        await req.user.updateOne({ aiUsagePkr: usagePkr });
+
+        if (usagePkr >= PKR_THRESHOLD) {
+          return res.status(403).json({
+            error: `AI usage limit reached (PKR ${usagePkr} / PKR ${PKR_THRESHOLD}). Contact support to reset.`,
+          });
+        }
+      }
+    } catch (_) {
+      // OpenRouter unreachable — don't block the user, proceed
+    }
+  }
+
+  res.json({ ok: true, apiKey });
 });
 
 module.exports = router;

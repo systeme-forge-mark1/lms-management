@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   subscribed: { type: Boolean, default: false },
   subscriptionExpiry: { type: Date, default: null },
   activeSessionToken: { type: String, default: null },
+  aiUsagePkr: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
