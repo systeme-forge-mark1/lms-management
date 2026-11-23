@@ -6,6 +6,7 @@ const connectDB = require('./db');
 const authRoutes       = require('./routes/auth');
 const subjectRoutes    = require('./routes/subjects');
 const adminRoutes      = require('./routes/admin');
+const usageRoutes      = require('./routes/usage');
 const lectTakerRoutes  = require('./routes/lectTaker');
 const quizSolverRoutes = require('./routes/quizSolver');
 const gdbSolverRoutes  = require('./routes/gdbSolver');
@@ -22,6 +23,7 @@ app.use(async (req, res, next) => {
 app.use('/api/auth',        authRoutes);
 app.use('/api/subjects',    subjectRoutes);
 app.use('/api/admin',       adminRoutes);
+app.use('/api/usage',       usageRoutes);
 app.use('/api/lect-taker',  lectTakerRoutes);
 app.use('/api/quiz-solver', quizSolverRoutes);
 app.use('/api/gdb-solver',  gdbSolverRoutes);
