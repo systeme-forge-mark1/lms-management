@@ -5,8 +5,8 @@ const requireAuth = require('../middleware/auth');
 const router = express.Router();
 
 const PKR_PER_USD            = 280;
-const COST_PER_1M_PROMPT     = 0.14;
-const COST_PER_1M_COMPLETION = 0.28;
+const COST_PER_1M_PROMPT     = 0.10;  // Gemini 2.0 Flash
+const COST_PER_1M_COMPLETION = 0.40;  // Gemini 2.0 Flash
 
 router.post('/track', requireAuth, async (req, res) => {
   const { promptTokens = 0, completionTokens = 0 } = req.body;
